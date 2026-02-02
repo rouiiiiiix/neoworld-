@@ -1,112 +1,340 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title> Give me your problem</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Therapist — شارك مشكلتك</title>
+
+  <!-- Lightweight system font stack; replace or add Google Fonts if desired -->
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#071025;
+      --muted:#94a3b8;
+      --accent:#22c55e;
+      --accent-600:#16a34a;
+      --surface:#0a1220;
+      --glass: rgba(255,255,255,0.03);
+      --radius:12px;
+      --gap:14px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, "Noto Naskh Arabic", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071023 0%, var(--bg) 100%);
+      color:#e6eef8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+    }
+
+    .wrapper{
+      width:100%;
+      max-width:720px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .logo {
+      width:48px;
+      height:48px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-600));
+      border-radius:10px;
+      display:inline-grid;
+      place-items:center;
+      font-weight:700;
+      color:#041114;
+      box-shadow: 0 6px 18px rgba(34,197,94,0.12), inset 0 -2px 6px rgba(255,255,255,0.03);
+    }
+
+    h1{
+      margin:0;
+      font-size:18px;
+      font-weight:600;
+    }
+
+    .subtitle{
+      margin:6px 0 18px 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    form{
+      display:flex;
+      flex-direction:column;
+      gap:var(--gap);
+      align-items:stretch;
+    }
+
+    label{
+      font-size:13px;
+      color:var(--muted);
+      display:block;
+      text-align:right;
+    }
+
+    textarea#problemInput{
+      min-height:120px;
+      max-height:320px;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      color:inherit;
+      resize:vertical;
+      font-size:15px;
+      outline:none;
+      transition:box-shadow .18s ease, border-color .18s ease, transform .12s ease;
+      box-shadow:0 2px 10px rgba(2,6,23,0.4);
+    }
+
+    textarea#problemInput:focus{
+      border-color: rgba(34,197,94,0.9);
+      box-shadow: 0 8px 30px rgba(34,197,94,0.06);
+      transform: translateY(-1px);
+    }
+
+    .controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:stretch;
+      flex-wrap:wrap;
+    }
+
+    button.primary{
+      flex:1 1 auto;
+      background:var(--accent);
+      color:#041114;
+      border:none;
+      padding:11px 14px;
+      border-radius:10px;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, opacity .12s ease;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      min-width:140px;
+    }
+
+    button.primary:hover{ background:var(--accent-600); transform:translateY(-1px); }
+    button.primary[disabled]{ opacity:0.75; cursor:progress; transform:none; }
+
+    .secondary{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      padding:10px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      min-width:120px;
+    }
+
+    .answer{
+      margin-top:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      padding:14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      color:#dff7e6;
+    }
+
+    .answer h3{ margin:0 0 6px 0; font-size:15px; color:#bfe7c3; }
+    .answer p{ margin:0; color: #d7eade; white-space:pre-wrap; }
+
+    .feedback{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      justify-content:flex-end;
+    }
+
+    .feedback button{
+      border-radius:8px;
+      border:none;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:600;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .thumb-up{ background: rgba(34,197,94,0.12); color:var(--accent-600); }
+    .thumb-down{ background: rgba(255,80,80,0.08); color:#ff6b6b; }
+
+    .meta{
+      margin-top:12px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      gap:8px;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .small{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* responsive */
+    @media (max-width:520px){
+      .card{ padding:18px }
+      .logo{ width:42px; height:42px }
+    }
+
+    /* tiny spinner */
+    .spinner{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:2px solid rgba(0,0,0,0.07);
+      border-top-color: rgba(255,255,255,0.9);
+      animation:spin .9s linear infinite;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg) } }
+  </style>
 </head>
 <body>
+  <main class="wrapper" role="main">
+    <section class="card" aria-labelledby="pageTitle">
+      <header>
+        <div class="logo" aria-hidden="true">Ai</div>
+        <div style="flex:1 1 auto; text-align:right">
+          <h1 id="pageTitle">المعالج النفسي بالذكاء الاصطناعي</h1>
+          <div class="subtitle">شارك مشكلتك بأمان — سنقدّم نصائح عامة فقط (ليست بديلاً عن استشارة مختص).</div>
+        </div>
+      </header>
 
-  <div class="container">
-    <h1>Ai Therapist 👨🏼‍⚕️</h1>
-    <p class="subtitle"></p>
+      <form id="problemForm" onsubmit="event.preventDefault(); getSolution();" aria-describedby="formHelp">
+        <label for="problemInput">اكتب مشكلتك</label>
+        <textarea id="problemInput" name="problem" placeholder="مثال: أشعر بالقلق عند التحدث أمام الآخرين..." required aria-required="true" aria-label="اكتب مشكلتك"></textarea>
 
-    <textarea id="problemInput" placeholder="....اكتب المشكلة "></textarea>
+        <div class="controls">
+          <button type="submit" id="submitBtn" class="primary" aria-live="polite">
+            <span id="btnLabel">إرسال</span>
+            <span id="btnSpinner" style="display:none;" class="spinner" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="secondary" onclick="document.getElementById('problemInput').value=''; document.getElementById('problemInput').focus();">
+            مسح
+          </button>
+        </div>
 
-    <button onclick="getSolution()"> Submit</button>
+        <div id="answerBox" class="answer" style="display:none;" aria-live="polite" aria-atomic="true">
+          <h3>✅ الحل المقترح</h3>
+          <p id="solutionText">...</p>
 
-    <div id="answerBox" class="answer hidden">
-      <h3>✅ الحل:</h3>
-      <p id="solutionText"></p>
+          <div class="feedback" role="group" aria-label="تقييم الإجابة">
+            <button id="usefulBtn" class="thumb-up" title="نفعني" onclick="handleFeedback(true)">👍 نفعني</button>
+            <button id="notUsefulBtn" class="thumb-down" title="لم ينفع" onclick="handleFeedback(false)">❌ ما نفعنيش</button>
+          </div>
 
-      <div class="actions">
-        <button>👍 نفعني</button>
-        <button>❌ ما نفعنيش</button>
-      </div>
-    </div>
-  </div>
+          <div class="meta">
+            <div class="small">تم إنشاء الرد بواسطة نموذج الذكاء الاصطناعي</div>
+            <div class="small" id="responseTime" aria-hidden="true"></div>
+          </div>
+        </div>
 
-  <style>
-    body {
-  background: #0f172a;
-  font-family: Arial, sans-serif;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+        <p id="formHelp" class="small" style="margin-top:12px; text-align:right; color:var(--muted);">
+          ملاحظة: لا تشارك معلومات شخصية حساسة. للاستخدام الطارئ النفسي اطلب المساعدة المحلية فوراً.
+        </p>
+      </form>
+    </section>
+  </main>
 
-.container {
-  background: #020617;
-  padding: 25px;
-  border-radius: 12px;
-  width: 50%;
-  max-width: 420px;
-  text-align: center;
-}
+  <script>
+    // Demo implementation: replace with real API call (fetch) to your backend or OpenAI endpoint.
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const btnLabel = document.getElementById('btnLabel');
+    const answerBox = document.getElementById('answerBox');
+    const solutionText = document.getElementById('solutionText');
+    const responseTime = document.getElementById('responseTime');
 
-h1 {
-  margin-bottom: 5px;
-}
+    function setLoading(on){
+      if(on){
+        submitBtn.setAttribute('disabled','');
+        btnSpinner.style.display = 'inline-block';
+        btnLabel.textContent = 'جارٍ المعالجة...';
+      } else {
+        submitBtn.removeAttribute('disabled');
+        btnSpinner.style.display = 'none';
+        btnLabel.textContent = 'إرسال';
+      }
+    }
 
-.subtitle {
-  color: #94a3b8;
-  margin-bottom: 20px;
-}
+    async function getSolution(){
+      const input = document.getElementById('problemInput').value.trim();
+      if(!input) {
+        document.getElementById('problemInput').focus();
+        return;
+      }
 
-textarea {
-  width: 80%;
-  height: 70px;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  resize: none;
-  font-size: 15px;
-}
+      // show loading UI
+      setLoading(true);
+      answerBox.style.display = 'none';
+      solutionText.textContent = '';
 
-button {
-  margin-top: 15px;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  background: #22c55e;
-  color: black;
-  font-size: 16px;
-  cursor: pointer;
-}
+      const start = Date.now();
 
-button:hover {
-  background: #16a34a;
-}
+      try {
+        // Simulated latency + AI response. Replace this block with:
+        // const res = await fetch('/api/ai-solve', { method:'POST', body: JSON.stringify({problem:input}) });
+        // const data = await res.json();
+        // const aiText = data.answer;
+        await new Promise(r => setTimeout(r, 900)); // simulate network
+        const aiText = `شكرًا لمشاركتك. بدايةً، حاول تنفّسًا عميقًا لثوانٍ قليلة، ثم لاحظ أفكارك دون حكم. إذا استمرت الأعراض أو أثرت على حياتك اليومية، فكر بالتواصل مع مختص نفسي. (إجابة تجريبية — استبدلها باستدعاء واجهة الذكاء الاصطناعي لديك.)`;
 
-.answer {
-  margin-top: 20px;
-  background: #020617;
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid #334155;
-}
+        // render
+        solutionText.textContent = aiText;
+        const elapsed = Date.now() - start;
+        responseTime.textContent = `الاستجابة خلال ${Math.round(elapsed/1000)} ثانية`;
+        answerBox.style.display = 'block';
+      } catch (err) {
+        solutionText.textContent = 'حدث خطأ أثناء جلب الحل، حاول مرة أخرى لاحقًا.';
+        answerBox.style.display = 'block';
+      } finally {
+        setLoading(false);
+      }
+    }
 
-.hidden {
-  display: none;
-}
+    // basic feedback handler — extend to record analytics or send to server
+    function handleFeedback(useful){
+      // visual acknowledgement
+      const btn = useful ? document.getElementById('usefulBtn') : document.getElementById('notUsefulBtn');
+      btn.textContent = useful ? '✅ شكراً' : '⛔ تم';
+      btn.setAttribute('disabled','');
+      // TODO: send feedback to server, e.g.:
+      // fetch('/api/feedback', {method:'POST', body:JSON.stringify({problem:..., solution:..., useful})})
+    }
 
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.actions button {
-  background: #334155;
-  color: white;
-}
-</style>
-
-  <script src="script.js"></script>
-
-  
+    // Optional: submit on Ctrl+Enter
+    document.getElementById('problemInput').addEventListener('keydown', e=>{
+      if((e.ctrlKey || e.metaKey) && e.key === 'Enter') getSolution();
+    });
+  </script>
 </body>
 </html>
