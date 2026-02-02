@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+  <meta charset="UTF-8">
+  <title> Give me your problem</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Ai Therapist 👨🏼‍⚕️</h1>
+    <p class="subtitle"></p>
+
+    <textarea id="problemInput" placeholder="....اكتب المشكلة "></textarea>
+
+    <button onclick="getSolution()"> Submit</button>
+
+    <div id="answerBox" class="answer hidden">
+      <h3>✅ الحل:</h3>
+      <p id="solutionText"></p>
+
+      <div class="actions">
+        <button>👍 نفعني</button>
+        <button>❌ ما نفعنيش</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    body {
+  background: #0f172a;
+  font-family: Arial, sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #020617;
+  padding: 25px;
+  border-radius: 12px;
+  width: 50%;
+  max-width: 420px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 80%;
+  height: 70px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  resize: none;
+  font-size: 15px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #22c55e;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+.answer {
+  margin-top: 20px;
+  background: #020617;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.hidden {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.actions button {
+  background: #334155;
+  color: white;
+}
+</style>
+
+  <script src="script.js"></script>
+
+  
+</body>
+</html>
